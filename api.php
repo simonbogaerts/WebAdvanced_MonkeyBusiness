@@ -25,22 +25,17 @@ try {
     $router->map('GET','/events/',
         function() use ($EventController) {
             $EventController->handleFindAllEvents();
-           // echo("hallo");
         }
     );
 
-
-/*
     $router->map('GET','/events/[i:id]',
         function($id) use ($EventController) {
             $EventController->handleFindEventById($id);
         }
     );
-*/
-    $match = $router->match();
 
+    $match = $router->match();
     if( $match && is_callable( $match['target'] ) ){
-        var_dump($match);
         call_user_func_array( $match['target'], $match['params'] );
     }
 } catch (Exception $e) {

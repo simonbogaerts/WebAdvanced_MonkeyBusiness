@@ -8,20 +8,21 @@
 
 namespace model;
 
+use \PDO;
 
 class PDOEventRepository
 {
-    private $pdo = null;
+    private $connection = null;
 
-    public function __construct( $pdo)
+    public function __construct(PDO $connection)
     {
-        $this->pdo = $pdo;
+        $this->connection = $connection;
     }
 
     public function getAll()
     {
         try{
-            $statement = $this->pdo->query('SELECT * from evenementen');
+            $statement = $this->connection->query('SELECT * from evenementen');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
 
             $data = [];
@@ -33,17 +34,28 @@ class PDOEventRepository
                     "end_date" => $row['eind_datum']
                 ];
             }
-
             echo json_encode($data);
 
         } catch (PDOException $e) {
-            print 'Exception!: ' . $e->getMessage();
+            echo 'Exception!: ' . $e->getMessage();
         }
         $pdo = null;
     }
 
     public function get($id)
     {
-        echo 'check!';
+        try{
+            $statement = $this->connection->prepare('SELECT * FROM evenementen WHERE evenement_id = :id');
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->bindParam(':id', $id, PDO::PARAM_INT);
+            $statement->execute();
+
+            $row = $statement->fetch();
+            echo json_encode($row);
+
+        } catch (PDOException $e) {
+            echo 'Exception!: ' . $e->getMessage();
+        }
+        $pdo = null;
     }
 }

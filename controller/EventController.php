@@ -25,7 +25,6 @@ class EventController
     }
 
     public function handleFindAllEvents(){
-        echo 'ok';
         $this->repository->getAll();
     }
 
