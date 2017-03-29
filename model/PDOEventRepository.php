@@ -42,10 +42,26 @@ class PDOEventRepository
         $pdo = null;
     }
 
-    public function get($id)
+    public function getById($id)
     {
         try{
             $statement = $this->connection->prepare('SELECT * FROM evenementen WHERE evenement_id = :id');
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->bindParam(':id', $id, PDO::PARAM_INT);
+            $statement->execute();
+
+            $row = $statement->fetch();
+            echo json_encode($row);
+
+        } catch (PDOException $e) {
+            echo 'Exception!: ' . $e->getMessage();
+        }
+        $pdo = null;
+    }
+
+    public function getByPersonId($id){
+        try{
+            $statement = $this->connection->prepare('SELECT * FROM evenementen WHERE persoon_id = :id');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();

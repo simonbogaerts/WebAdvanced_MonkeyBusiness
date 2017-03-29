@@ -22,15 +22,28 @@ try {
     $router = new AltoRouter();
     $router->setBasePath('/~user/MonkeyBusiness');
 
-    $router->map('GET','/events/',
+    /*$router->map('GET','/events/',
         function() use ($EventController) {
             $EventController->handleFindAllEvents();
         }
-    );
+    );*/
 
     $router->map('GET','/events/[i:id]',
         function($id) use ($EventController) {
             $EventController->handleFindEventById($id);
+        }
+    );
+
+    $router->map('GET','/events/',
+        function() use ($EventController) {
+            $inputJSON = file_get_contents('php://input');
+            $input = json_decode($inputJSON, TRUE);
+            if ($input != null) {
+                $EventController->handleFindAllEvents();
+            }
+            else {
+                $EventController->handleFindEventByPersonId($input['person_id']);
+            }
         }
     );
 

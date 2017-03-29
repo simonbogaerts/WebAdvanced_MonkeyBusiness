@@ -29,6 +29,10 @@ class EventController
     }
 
     public function handleFindEventById($id){
-        $this->repository->get($id);
+        $this->repository->getById($id);
+    }
+
+    public function handleFindEventByPersonId($id){
+        $this->repository->getByPersonId($id);
     }
 }
