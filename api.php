@@ -22,11 +22,11 @@ try {
     $router = new AltoRouter();
     $router->setBasePath('/~user/MonkeyBusiness');
 
-    /*$router->map('GET','/events/',
+    $router->map('GET','/events/',
         function() use ($EventController) {
             $EventController->handleFindAllEvents();
         }
-    );*/
+    );
 
     $router->map('GET','/events/[i:id]',
         function($id) use ($EventController) {
@@ -34,7 +34,7 @@ try {
         }
     );
 
-    $router->map('GET','/events/',
+    /*$router->map('GET','/events/',
         function() use ($EventController) {
             $inputJSON = file_get_contents('php://input');
             $input = json_decode($inputJSON, TRUE);
@@ -45,7 +45,7 @@ try {
                 $EventController->handleFindEventByPersonId($input['person_id']);
             }
         }
-    );
+    );*/
 
     $match = $router->match();
     if( $match && is_callable( $match['target'] ) ){
