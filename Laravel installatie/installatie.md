@@ -6,8 +6,8 @@ Stap 1
 
 
 -ERROR: 
--> php.ini-development veranderen naar php.ini
--> uit commentaar zetten
+- php.ini-development veranderen naar php.ini
+- uit commentaar zetten
 	- extension=php_openssl.dll
 	- extension=php_mbstring.dll
     - extension_dir = "ext"
