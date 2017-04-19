@@ -8,8 +8,6 @@
 
 namespace controller;
 
-
-
 use view\EventJsonView;
 use model\PDOEventRepository;
 
@@ -26,6 +24,10 @@ class EventController
 
     public function handleFindAllEvents(){
         $this->repository->getAll();
+    }
+
+    public function handleFindAllPersons(){
+        $this->repository->getAllPersons();
     }
 
     public function handleFindEventById($id){

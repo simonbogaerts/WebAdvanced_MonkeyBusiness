@@ -7,8 +7,8 @@ use view\EventJsonView;
 use controller\EventController;
 
 $user = 'root';
-$password = 'root';
-$database = 'MonkeyBusinessDB';
+$password = 'user';
+$database = 'monkey_business';
 $hostname = '127.0.0.1';
 $pdo = null;
 
@@ -21,7 +21,7 @@ try {
     $EventController = new EventController($PDOEventRepository, $EventJsonView);
     $router = new AltoRouter();
     $router->setBasePath('/~user/MonkeyBusiness');
-
+    
     $router->map('GET','/events/',
         function() use ($EventController) {
             $EventController->handleFindAllEvents();
@@ -34,18 +34,17 @@ try {
         }
     );
 
-    /*$router->map('GET','/events/',
+    $router->map('GET','/person/',
         function() use ($EventController) {
-            $inputJSON = file_get_contents('php://input');
-            $input = json_decode($inputJSON, TRUE);
-            if ($input != null) {
-                $EventController->handleFindAllEvents();
-            }
-            else {
-                $EventController->handleFindEventByPersonId($input['person_id']);
-            }
+            $EventController->handleFindAllPersons();
         }
-    );*/
+    );
+
+    $router->map('GET', '/person/[i:id]',
+        function($id) use ($EventController){
+            $EventController->handleFindEventByPersonId($id);
+        }
+    );
 
     $match = $router->match();
     if( $match && is_callable( $match['target'] ) ){
