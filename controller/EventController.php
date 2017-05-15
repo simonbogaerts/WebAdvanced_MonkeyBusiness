@@ -22,6 +22,11 @@ class EventController
         $this->view = $view;
     }
 
+
+    public  function  handleFindAllFromDate(){
+        $this->repository->getEventsFromDate();
+    }
+
     public function handleFindAllEvents(){
         $this->repository->getAll();
     }
@@ -37,4 +42,14 @@ class EventController
     public function handleFindEventByPersonId($id){
         $this->repository->getByPersonId($id);
     }
+
+
+    public function handleFindAllEventsByPersonId($id){
+        $this->repository->getAllEventsByPersonId($id);
+    }
+
+    public function handlePostEvent($id, $action){
+        $this->repository->postEvent($id,$action);
+    }
+
 }
