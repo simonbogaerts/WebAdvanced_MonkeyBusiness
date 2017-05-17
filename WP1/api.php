@@ -10,7 +10,7 @@ use controller\EventController;
 
 $user = 'root';
 $password = 'user';
-$database = 'WedAdvanced';
+$database = 'monkey_business';
 $hostname = '127.0.0.1';
 $pdo = null;
 try {
@@ -21,7 +21,7 @@ try {
     $EventJsonView = new EventJsonView();
     $EventController = new EventController($PDOEventRepository, $EventJsonView);
     $router = new AltoRouter();
-    $router->setBasePath('/~user/businessMonkey');
+    $router->setBasePath('/~user/MonkeyBusiness');
 
     $router->map('GET','/',
         function() use ($EventController){
