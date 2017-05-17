@@ -1,0 +1,51 @@
+<!--SOURCE: https://www.w3schools.com/html/html5_webstorage.asp-->
+<!DOCTYPE html>
+<html>
+<body>
+<div id="error"></div>
+<h3>This is stored in the local storage.</h3>
+<span id="firstname"></span>
+<span id="lastname"></span>
+<p>The data will not be deleted when the browser is closed, and will be available the next day, week, or year.</p>
+<br>
+<br>
+<h3>This is stored in the session storage.</h3>
+<p><button onclick="clickCounter()" type="button">Click me!</button></p>
+<div id="result"></div>
+<p>Click the button to see the counter increase.</p>
+<p>The data is deleted when the user closes the specific browser tab.</p>
+<script>
+    // Check browser support
+    if (typeof(Storage) !== "undefined") {
+        // Store
+        if (!localStorage.getItem("lastname")){
+            localStorage.setItem("lastname", "Doe");
+        }
+
+        if (!localStorage.getItem("firstname")){
+            localStorage.setItem("firstname", "John");
+        }
+
+        // Retrieve
+        document.getElementById("firstname").innerHTML = localStorage.getItem("firstname");
+        document.getElementById("lastname").innerHTML = localStorage.getItem("lastname");
+    } else {
+        document.getElementById("error").innerHTML = "Sorry, your browser does not support Web Storage...";
+    }
+</script>
+<script>
+    function clickCounter() {
+        if(typeof(Storage) !== "undefined") {
+            if (sessionStorage.clickcount) {
+                sessionStorage.clickcount = Number(sessionStorage.clickcount)+1;
+            } else {
+                sessionStorage.clickcount = 1;
+            }
+            document.getElementById("result").innerHTML = "You have clicked the button " + sessionStorage.clickcount + " time(s) in this session.";
+        } else {
+            document.getElementById("error").innerHTML = "Sorry, your browser does not support web storage...";
+        }
+    }
+</script>
+</body>
+</html>

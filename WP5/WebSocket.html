@@ -1,0 +1,51 @@
+<!--SOURCE: https://www.tutorialspoint.com/html5/html5_websocket.htm-->
+<!DOCTYPE HTML>
+<html>
+<body>
+<div id="sse">
+    <a href="javascript:WebSocketTest()">Run WebSocket</a>
+</div>
+
+<p>Ga in de webserver-vm naar de directory "~/pywebsocket/mod_pywebsocket/" en voer het commando "$sudo python standalone.py -p 9998 -w ../example/" uit.</p>
+<p>Klik daarna op de bovenstaande link.</p>
+<script type="text/javascript">
+    function WebSocketTest()
+    {
+        if ("WebSocket" in window)
+        {
+            alert("WebSocket is supported by your Browser!");
+
+            // Let us open a web socket
+            var ws = new WebSocket("ws://192.168.50.132:9998/echo");
+
+            // This event occurs when socket connection is established.
+            ws.onopen = function()
+            {
+                // Web Socket is connected, send data using send()
+                ws.send('"TEST"');
+                alert("A hidden message is sent to the server...");
+            };
+
+            // This event occurs when client receives data from server.
+            ws.onmessage = function (evt)
+            {
+                var received_msg = evt.data;
+                alert("The server returned the message, which was: ".concat(received_msg));
+            };
+
+            // This event occurs when connection is closed.
+            ws.onclose = function()
+            {
+                // websocket is closed.
+                alert("Connection is closed...");
+            };
+        }
+        else
+        {
+            // The browser doesn't support WebSocket
+            alert("WebSocket NOT supported by your Browser!");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!--SOURCE: https://www.w3schools.com/html/html5_draganddrop.asp-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <style>
+        .square {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            padding: 10px;
+            border: 5px solid #00bcd4;
+            background-color: green;
+        }
+        .square:nth-child(2){
+            margin-left: 200px;
+        }
+
+        .square:last-child {
+            margin-left: 400px;
+        }
+
+        #draggable{
+            width: 150px;
+            height: 150px;
+        }
+        body {
+            background-color: red;
+        }
+    </style>
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+        }
+    </script>
+</head>
+<body>
+<div class="square" ondrop="drop(event)" ondragover="allowDrop(event)"><img id="draggable" src="http://www.pxl.be/img/logo.png" draggable="true" ondragstart="drag(event)"></div>
+<div class="square" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+<div class="square" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+</body>
+</html>
