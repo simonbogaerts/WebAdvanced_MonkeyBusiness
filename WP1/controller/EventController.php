@@ -23,16 +23,18 @@ class EventController
     }
 
 
-    public  function  handleFindAllFromDate(){
-        $this->repository->getEventsFromDate();
+    public  function  handleFindAllFromDate($from,$until){
+        $this->repository->getEventsFromDate($from, $until);
+
     }
 
     public function handleFindAllEvents(){
-        $this->repository->getAll();
+            $this->repository->getAll();
+
     }
 
-    public function handleFindAllPersons(){
-        $this->repository->getAllPersons();
+    public function handleFindByPersonAndDate($id, $from, $until){
+        $this->repository->FindByPersonAndDate($id, $from, $until);
     }
 
     public function handleFindEventById($id){
@@ -48,8 +50,20 @@ class EventController
         $this->repository->getAllEventsByPersonId($id);
     }
 
-    public function handlePostEvent($id, $action){
-        $this->repository->postEvent($id,$action);
+    public function handleActionEvents($id, $action){
+        $this->repository->actionEvents($id,$action);
+    }
+
+    public function handlePostEvents($id){
+        $this->repository->postEvents($id);
+    }
+
+    public function handleDeleteEvents($id){
+        $this->repository->deleteEvents($id);
+    }
+
+    public function handlePutEvents($id){
+        $this->repository->putEvents($id);
     }
 
 }

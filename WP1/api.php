@@ -8,20 +8,27 @@ use model\PDOEventRepository;
 use view\EventJsonView;
 use controller\EventController;
 
+use model\PDOPersonRepository;
+use view\PersonJsonView;
+use controller\PersonController;
+
 $user = 'root';
-$password = 'user';
-$database = 'monkey_business';
+$password = '';
+$database = 'monkey_buisness';
 $hostname = '127.0.0.1';
 $pdo = null;
 try {
 
     $pdo = new PDO("mysql:host=$hostname;dbname=$database", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $PDOPersonRepository = new PDOPersonRepository($pdo);
     $PDOEventRepository = new PDOEventRepository($pdo);
+    $PersonJsonView = new PersonJsonView();
+    $PersonController = new PersonController($PDOPersonRepository, $PersonJsonView);
     $EventJsonView = new EventJsonView();
     $EventController = new EventController($PDOEventRepository, $EventJsonView);
     $router = new AltoRouter();
-    $router->setBasePath('/~user/MonkeyBusiness');
+    $router->setBasePath('/MonkeyBusiness');
 
     $router->map('GET','/',
         function() use ($EventController){
@@ -31,14 +38,39 @@ try {
 
     $router->map('GET','/events/',
         function() use ($EventController) {
-            $EventController->handleFindAllEvents();
+            $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            $parts = parse_url($url);
+            if (count($parts) > 3 && strpos($url, 'from') && strpos($url, 'until')) {
+                parse_str($parts['query'], $query);
+                $from = $query['from'];
+                $until = $query['until'];
+                if($from != null && $until != null) {
+                    $EventController->handleFindAllFromDate($from, $until);
+                }else{
+                    $EventController->handleFindAllEvents();
+                }
+            } else {
+                $EventController->handleFindAllEvents();
+            }
         },'get_all_events'
     );
-
-    $router->map('GET','/events/?[*dates]?',
-        function() use ($EventController) {
-            $EventController->handleFindAllFromDate();
-        },'get_events_by_date'
+    $router->map('GET','/person/[i:id]/events/',
+        function($id) use ($EventController) {
+            $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            $parts = parse_url($url);
+            if (count($parts) > 5 && strpos($url, 'from') && strpos($url, 'until')) {
+                parse_str($parts['query'], $query);
+                $from = $query['from'];
+                $until = $query['until'];
+                if ($from != null && $until != null) {
+                    $EventController->handleFindByPersonAndDate($id, $from, $until);
+                } else {
+                    $EventController->handleFindAllEventsByPersonId($id);
+                }
+            } else {
+                $EventController->handleFindAllEventsByPersonId($id);
+            }
+        },'get_events_by_person_and_date'
     );
 
     $router->map('GET','/events/[i:id]/',
@@ -53,84 +85,54 @@ try {
         },'get_events_by_person_id'
     );
 
+    //CRUD events
+
+    //Read
     $router->map('GET','/person/',
-        function() use ($EventController) {
-            $EventController->handleFindAllPersons();
+        function() use ($PersonController) {
+            $PersonController->handleFindAllPersons();
         },'get_all_person'
     );
 
-    $router->map('GET', '/person/[i:id]/',
-        function($id) use ($EventController){
-            $EventController->handleFindEventByPersonId($id);
-        },'find_person_by_id'
+    //Create
+    $router->map('PUT','/events/[i:id]/',
+        function($id) use ($EventController) {
+            $EventController->handlePutEvents($id);
+        }
+        ,'put_events'
+    );
+    //Update
+    $router->map('POST','/events/[i:id]/',
+        function($id) use ($EventController) {
+            $EventController->handlePostEvents($id);
+        }
+        ,'post_events'
     );
 
+    //Delete
+    $router->map('DELETE','/events/[i:id]/',
+        function($id) use ($EventController) {
+            $EventController->handleDeleteEvents($id);
+        }
+        ,'delete_events'
+    );
+
+    //CRUD via POST on url
     $router->map('POST','/events/[i:id]/[delete|update|create|read:action]/',
             function($id, $action) use ($EventController) {
-                    $EventController->handlePostEvent($id, $action);
+                    $EventController->handleActionEvents($id, $action);
         }
-    ,'post_events'
+    ,'action_events'
     );
+
 
     $match = $router->match();
     if( $match && is_callable( $match['target'] ) ){
         call_user_func_array( $match['target'], $match['params'] );
-        $parameters = $match['params'];
     }
 } catch (Exception $e) {
     var_dump($e);
 }
 
 ?>
-
-<h1>Page</h1>
-
-<?php echo $router->generate('get_all_events'); ?>
-<form action=" <?php echo $router->generate('get_all_events'); ?> " method="get">
-    <button type="submit">get all events</button>
-</form>
-
-<?php echo $router->generate('get_events_by_id',array('id'=>1)); ?>
-<form action=" <?php echo $router->generate('get_events_by_id',array('id'=>1)); ?> " method="get">
-    <button type="submit">get events by id</button>
-</form>
-
-<?php echo $router->generate('get_events_by_person_id',array('id'=>1)); ?>
-<form action=" <?php echo $router->generate('get_events_by_person_id',array('id'=>1)); ?> " method="get">
-    <button type="submit">get events by person id</button>
-</form>
-
-<?php echo $router->generate('get_events_by_date'); ?>
-<form action=" <?php echo $router->generate('get_events_by_date'); ?> " method="get">
-    <label>start_date:<input name="from" type="text" /></label> <br>
-    <label>end_date:<input name="until" type="text" /></label> <br>
-    <button type="submit">get event from dates</button>
-</form>
-
-<?php echo $router->generate('post_events',array('id'=>3, 'action'=>'update')); ?>
-<form action=" <?php echo $router->generate('post_events',array('id'=>3, 'action'=>'update')); ?> " method="post">
-    <label>person_id:<input name="person_id" type="text" /></label> <br>
-    <label>start_date:<input name="start_date" type="text" /></label> <br>
-    <label>end_date:<input name="end_date" type="text" /></label> <br>
-    <button type="submit">update event</button>
-</form>
-
-<?php echo $router->generate('post_events',array('id'=>5, 'action'=>'create')); ?>
-<form action=" <?php echo $router->generate('post_events',array('id'=>5, 'action'=>'create')); ?> " method="post">
-    <label>person_id:<input name="person_id" type="text" /></label> <br>
-    <label>start_date:<input name="start_date" type="text" /></label> <br>
-    <label>end_date:<input name="end_date" type="text" /></label> <br>
-    <button type="submit">create event</button>
-</form>
-
-<?php echo $router->generate('post_events',array('id'=>3, 'action'=>'read')); ?>
-<form action=" <?php echo $router->generate('post_events',array('id'=>3, 'action'=>'read')); ?> " method="post">
-    <button type="submit">Read event met id 3</button>
-</form>
-
-<?php echo $router->generate('post_events',array('id'=>2, 'action'=>'delete')); ?>
-<form action=" <?php echo $router->generate('post_events',array('id'=>2, 'action'=>'delete')); ?> " method="post">
-    <button type="submit">Delete event met id 2</button>
-</form>
-
 
