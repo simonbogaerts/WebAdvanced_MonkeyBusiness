@@ -32,7 +32,7 @@ class PDOEventRepository
             while ($row = $statement->fetch()) {
                 $data[] = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
             }
-            return json_encode($data);
+            return $data;
 
         } catch (PDOException $e) {
             return 'Exception!: ' . $e->getMessage();
@@ -40,34 +40,28 @@ class PDOEventRepository
             $pdo = null;
         }
     }
-/*
+
     public function FindByPersonAndDate($id, $from, $until){
         try{
-            $statement = $this->connection->prepare('SELECT * FROM events WHERE start_date >= :startdate and end_date <= :enddate and person_id == :id');
+            $statement = $this->connection->prepare('SELECT * FROM events WHERE (start_date >= :startdate and end_date <= :enddate) and person_id = :id');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':startdate', $from, PDO::PARAM_STR);
             $statement->bindParam(':enddate', $until, PDO::PARAM_STR);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
-
             $statement->execute();
 
-            $data = [];
+            $data = array();
             while ($row = $statement->fetch()) {
-                $data[] = array(
-                    "event_id" => $row['event_id'],
-                    "person_id" => $row['person_id'],
-                    "start_date" => $row['start_date'],
-                    "end_date" => $row['end_date']
-                );
+                $data[] = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
             }
-            echo json_encode($data);
-
+            return $data;
         } catch (PDOException $e) {
-            echo 'Exception!: ' . $e->getMessage();
+            return 'Exception!: ' . $e->getMessage();
+        }finally{
+            $pdo = null;
         }
-        $pdo = null;
     }
-*/
+
     public function getAll()
     {
         try{

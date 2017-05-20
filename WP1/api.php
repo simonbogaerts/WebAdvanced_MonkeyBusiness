@@ -58,15 +58,13 @@ try {
         function($id) use ($EventController) {
             $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
             $parts = parse_url($url);
-            if (count($parts) > 5 && strpos($url, 'from') && strpos($url, 'until')) {
+            if (count($parts) > 3 && strpos($url, 'from') && strpos($url, 'until')) {
                 parse_str($parts['query'], $query);
                 $from = $query['from'];
                 $until = $query['until'];
-                if ($from != null && $until != null) {
+
                     $EventController->handleFindByPersonAndDate($id, $from, $until);
-                } else {
-                    $EventController->handleFindAllEventsByPersonId($id);
-                }
+
             } else {
                 $EventController->handleFindAllEventsByPersonId($id);
             }
