@@ -8,7 +8,9 @@
 
 namespace model;
 
+use controller\PersonController;
 use \PDO;
+use model\Person;
 
 class PDOPersonRepository
 {
@@ -24,39 +26,34 @@ class PDOPersonRepository
             $statement = $this->connection->query('SELECT * from person');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-            $data = [];
+            $data = array();
             while ($row = $statement->fetch()) {
-                $data[] = array(
-                    "person_id" => $row['person_id'],
-                    "first_name" => $row['first_name'],
-                    "last_name" => $row['last_name'],
-                    "street" => $row['street'],
-                    "number" => $row['number'],
-                    "zip" => $row['zip'],
-                    "town" => $row['town']
-                );
+                $data[] = new Person($row['person_id'], $row['first_name'], $row['last_name'],$row['street'],$row['number'],$row['zip'],$row['town']);
             }
-            echo json_encode($data);
+            return $data;
 
         } catch (PDOException $e) {
-            echo 'Exception!: ' . $e->getMessage();
+            return 'Exception!: ' . $e->getMessage();
+        }finally{
+            $pdo = null;
         }
-        $pdo = null;
     }
 
     public function getPersonById($id){
         try{
-                $statement = $this->connection->prepare('SELECT *  FROM person WHERE person_id = :id ');
+            $statement = $this->connection->prepare('SELECT *  FROM person WHERE person_id = :id ');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();
 
             $row = $statement->fetch();
-            echo json_encode($row);
+            $person = new Person($row['person_id'], $row['first_name'], $row['last_name'],$row['street'],$row['number'],$row['zip'],$row['town']);
+            return $person;
         } catch (PDOException $e) {
-            echo 'Exception!: ' . $e->getMessage();
+            return 'Exception!: ' . $e->getMessage();
+        }finally{
+            $pdo = null;
         }
-        $pdo = null;
     }
 
     public function putPerson($id){

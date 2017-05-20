@@ -8,6 +8,7 @@
 
 namespace controller;
 
+use model\Event;
 use view\EventJsonView;
 use model\PDOEventRepository;
 
@@ -24,34 +25,39 @@ class EventController
 
 
     public  function  handleFindAllFromDate($from,$until){
-        $this->repository->getEventsFromDate($from, $until);
+        $events = $this->repository->getEventsFromDate($from, $until);
+        $this -> view -> ShowAll($events);
 
     }
 
     public function handleFindAllEvents(){
-            $this->repository->getAll();
+        $events = $this->repository->getAll();
+        $this -> view -> ShowAll($events);
 
     }
-
+/*
     public function handleFindByPersonAndDate($id, $from, $until){
-        $this->repository->FindByPersonAndDate($id, $from, $until);
-    }
+        $events = $this->repository->FindByPersonAndDate($id, $from, $until);
+        $this -> view -> ShowAll($events);
 
+
+    }
+*/
     public function handleFindEventById($id){
-        $this->repository->getById($id);
+        $event = $this->repository->getById($id);
+        $this->view->ShowEvent($event);
     }
 
     public function handleFindEventByPersonId($id){
-        $this->repository->getByPersonId($id);
-    }
+        $event = $this->repository->getByPersonId($id);
+        $this->view->ShowEvent($event);
 
+    }
 
     public function handleFindAllEventsByPersonId($id){
-        $this->repository->getAllEventsByPersonId($id);
-    }
+        $events = $this->repository->getAllEventsByPersonId($id);
+        $this -> view -> ShowAll($events);
 
-    public function handleActionEvents($id, $action){
-        $this->repository->actionEvents($id,$action);
     }
 
     public function handlePostEvents($id){

@@ -23,10 +23,12 @@ class PersonController
     }
 
     public function handleFindAllPersons(){
-        $this->repository->getAllPersons();
+        $persons = $this->repository->getAllPersons();
+        $this->view->ShowAll($persons);
     }
     public function handleFindPersonById($id){
-        $this->repository->getPersonById($id);
+        $person = $this->repository->getPersonById($id);
+        $this->view->ShowPerson($person);
     }
 
     public function handlePutPerson($id){

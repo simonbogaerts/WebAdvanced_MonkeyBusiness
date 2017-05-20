@@ -117,15 +117,6 @@ try {
         ,'delete_events'
     );
 
-    //CRUD via POST on url
-    $router->map('POST','/events/[i:id]/[delete|update|create|read:action]/',
-            function($id, $action) use ($EventController) {
-                    $EventController->handleActionEvents($id, $action);
-        }
-    ,'action_events'
-    );
-
-
     $match = $router->match();
     if( $match && is_callable( $match['target'] ) ){
         call_user_func_array( $match['target'], $match['params'] );
