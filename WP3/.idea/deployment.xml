@@ -5,7 +5,7 @@
       <paths name="WebServer">
         <serverdata>
           <mappings>
-            <mapping deploy="/public_html/MonkeyBusiness" local="$PROJECT_DIR$" web="/MonkeyBusiness" />
+            <mapping deploy="/public_html/MonkeyBusinessWP3" local="$PROJECT_DIR$" web="/MonkeyBusinessWP3" />
           </mappings>
         </serverdata>
       </paths>

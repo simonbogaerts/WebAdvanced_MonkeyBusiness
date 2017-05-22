@@ -28,7 +28,7 @@ try {
     $EventJsonView = new EventJsonView();
     $EventController = new EventController($PDOEventRepository, $EventJsonView);
     $router = new AltoRouter();
-    $router->setBasePath('/~user/MonkeyBusiness');
+    $router->setBasePath('/~user/MonkeyBusinessWP3');
 
     $router->map('GET','/',
         function() use ($EventController){
@@ -116,6 +116,7 @@ try {
     );
 
     $match = $router->match();
+
     if( $match && is_callable( $match['target'] ) ){
         call_user_func_array( $match['target'], $match['params'] );
     }
@@ -124,4 +125,3 @@ try {
 }
 
 ?>
-
