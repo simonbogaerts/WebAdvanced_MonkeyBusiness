@@ -12,14 +12,10 @@ use model\PDOPersonRepository;
 use view\PersonJsonView;
 use controller\PersonController;
 
-$user = 'root';
-$password = 'user';
-$database = 'monkey_business';
-$hostname = '127.0.0.1';
 $pdo = null;
 try {
-
-    $pdo = new PDO("mysql:host=$hostname;dbname=$database", $user, $password);
+    $dbData = json_decode(file_get_contents(dbconfig.json));
+    $pdo = new PDO("mysql:host=$dbData->hostname;dbname=$dbData->database", $dbData->user, $dbData->password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $PDOPersonRepository = new PDOPersonRepository($pdo);
     $PDOEventRepository = new PDOEventRepository($pdo);

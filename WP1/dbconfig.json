@@ -1,0 +1,6 @@
+{
+  "user" : "root",
+  "password" : "user",
+  "database" : "monkey_business",
+  "hostname" : "127.0.0.1"
+}
