@@ -8,15 +8,14 @@
 <body>
 
 <div class="topnav">
-    <a class="active" href="#home">Home</a>
-    <a href="#about">About</a>
+    <a class="active" href="index.php">Home</a>
 </div>
 
 <div id="container">
-    <h2>Test table</h2>
+    <h2>WP3 JavaScript</h2>
     <label for="eventIdInput">Event ID</label>
     <input type="text" id="eventIdInput" placeholder="Geef Event ID in..">
-    <div id="formInput">
+    <div id="formInputGetAll">
         <button id="getOne">Get one</button>
         <button id="getAll">Get all</button>
     </div>

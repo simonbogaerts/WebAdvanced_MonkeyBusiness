@@ -13,7 +13,7 @@ use view\PersonJsonView;
 use controller\PersonController;
 
 $user = 'root';
-$password = 'user';
+$password = '';
 $database = 'monkey_business';
 $hostname = '127.0.0.1';
 $pdo = null;
@@ -28,7 +28,7 @@ try {
     $EventJsonView = new EventJsonView();
     $EventController = new EventController($PDOEventRepository, $EventJsonView);
     $router = new AltoRouter();
-    $router->setBasePath('/~user/MonkeyBusinessWP3');
+    $router->setBasePath('/MonkeyBusinessWP3');
 
     $router->map('GET','/',
         function() use ($EventController){

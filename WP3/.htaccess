@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /~user/MonkeyBusinessWP3/
+    RewriteBase /MonkeyBusinessWP3/
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^((?!wp3).)*$ api.php?/$1 [L]

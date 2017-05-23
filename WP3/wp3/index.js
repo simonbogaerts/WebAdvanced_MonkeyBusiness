@@ -1,4 +1,4 @@
-fetch('http://172.16.17.129/~user/MonkeyBusinessWP3/events/'
+fetch('http://localhost/MonkeyBusinessWP3/events/'
 ).then(function(response) {
     // Convert to JSON
     return response.json();

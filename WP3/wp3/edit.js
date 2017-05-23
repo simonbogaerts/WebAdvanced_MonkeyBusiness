@@ -4,7 +4,7 @@ function validateFormOnSubmit() {
     var formStart = document.forms["eventForm"]["start_date"].value;
     var formEnd = document.forms["eventForm"]["end_date"].value;
 
-    fetch('http://172.16.17.129/~user/MonkeyBusinessWP3/events/'+formId+'/', {
+    fetch('http://localhost/MonkeyBusinessWP3/events/'+formId+'/', {
         method: 'POST',
         headers: new Headers({
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -20,7 +20,7 @@ function validateFormOnSubmit() {
 
 
 
-fetch('http://172.16.17.129/~user/MonkeyBusinessWP3/events/'+eventId+'/'
+fetch('http://localhost/MonkeyBusinessWP3/events/'+eventId+'/'
 ).then(function(response) {
     // Convert to JSON
     return response.json();
@@ -31,7 +31,7 @@ fetch('http://172.16.17.129/~user/MonkeyBusinessWP3/events/'+eventId+'/'
             + 'Person id: <input type="text" name="person_id" value="'+ jsonObject.person_id +'" ><br>'
             + 'Start Date: <input type="text" name="start_date" value="'+ jsonObject.start_date +'" ><br>'
             + 'End Date: <input type="text" name="end_date" value="'+ jsonObject.end_date +'" ><br>'
-            + '<input type="submit" value="Submit">'
+            + '<div id="submitInput"><input class="submitButton" type="submit" value="Submit"></div>'
         + '</form>';
     text = text + "</ul>"
     var el = document.getElementById("content");
