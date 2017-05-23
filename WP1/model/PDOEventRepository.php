@@ -178,7 +178,6 @@ class PDOEventRepository
     public function putEvents($id){
         try{
             $statement = $this->connection->prepare('INSERT INTO events (event_id, person_id, start_date, end_date) VALUES (:id, :personid, :startdate, :enddate)');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->bindParam(':personid', $_POST['person_id'], PDO::PARAM_INT);
             $statement->bindParam(':startdate', $_POST['start_date'], PDO::PARAM_STR);

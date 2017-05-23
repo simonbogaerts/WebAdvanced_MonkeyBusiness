@@ -71,6 +71,13 @@ class PersonControllerTest extends \PHPUnit_Framework_TestCase
         $personController->handlePutPerson(1);
     }
 
+    public function test_handlePutPerson_exceptionThrownFromPDO_null()
+    {
+        $this->mockPersonRepository->expects($this->atLeastOnce())->method('putPerson')->will($this->returnValue(new \PDOException()));
+        $personController = new PersonController($this->mockPersonRepository, $this->mockView);
+        $personController->handlePutPerson(1);
+    }
+
     //End Tests handlePutPerson
 
 }

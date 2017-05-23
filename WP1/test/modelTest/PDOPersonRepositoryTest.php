@@ -168,7 +168,7 @@ class PDOPersonRepositoryTest extends \PHPUnit_Framework_TestCase
 
     //Tests putPerson
 
-    public function test_putEvents_idExists_noReturn()
+    public function test_putPerson_idExists_noReturn()
     {
 
         $person = new Person(1, 'John', 'Johnson', 'Groovestreet', '11', '33556', 'Los Santos');
@@ -182,6 +182,24 @@ class PDOPersonRepositoryTest extends \PHPUnit_Framework_TestCase
         $pdoRepository = new PDOPersonRepository($this->mockPDO);
         $pdoRepository->putPerson($person);
     }
+
+    public function test_putPerson_exeptionThrownFromPDO_Null()
+    {
+
+        $person = new Person(1, 'John', 'Johnson', 'Groovestreet', 'aa', '33556', 'Los Santos');
+
+        $this->mockPDOStatement->expects($this->atLeastOnce())
+            ->method('bindParam')->will(
+                $this->throwException(new PDOException()));
+        $this->mockPDO->expects($this->atLeastOnce())
+            ->method('prepare')
+            ->will($this->returnValue($this->mockPDOStatement));
+        $pdoRepository = new PDOPersonRepository($this->mockPDO);
+        $actualPerson = $pdoRepository->putPerson($person);
+        $this->assertNull($actualPerson);
+    }
+
+
 
     //End Tests putPerson
 }

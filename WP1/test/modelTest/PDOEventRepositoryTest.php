@@ -478,6 +478,18 @@ class PDOEventRepositoryTest extends \PHPUnit_Framework_TestCase
         $pdoRepository = new PDOEventRepository($this->mockPDO);
         $pdoRepository->putEvents($event);
     }
+    public function test_putEvents_badValues_Null()
+    {
+        $this->mockPDOStatement->expects($this->atLeastOnce())
+            ->method('bindParam')
+            ->will($this->throwException(new \PDOException()));
+        $this->mockPDO->expects($this->atLeastOnce())
+            ->method('prepare')
+            ->will($this->returnValue($this->mockPDOStatement));
+        $pdoRepository = new PDOEventRepository($this->mockPDO);
+        $returnValue = $pdoRepository->putEvents(new Event(1,2,3,3));
+        $this->assertNull($returnValue);
+    }
     //End Tests putEvents CREATE
 
     //Tests postEvents  UPDATE
@@ -496,6 +508,19 @@ class PDOEventRepositoryTest extends \PHPUnit_Framework_TestCase
         $pdoRepository = new PDOEventRepository($this->mockPDO);
         $pdoRepository->postEvents($event);
     }
+
+    public function test_postEvents_badValues_Null()
+    {
+        $this->mockPDOStatement->expects($this->atLeastOnce())
+            ->method('bindParam')
+            ->will($this->throwException(new \PDOException()));
+        $this->mockPDO->expects($this->atLeastOnce())
+            ->method('prepare')
+            ->will($this->returnValue($this->mockPDOStatement));
+        $pdoRepository = new PDOEventRepository($this->mockPDO);
+        $returnValue = $pdoRepository->postEvents(new Event(1,2,3,3));
+        $this->assertNull($returnValue);
+    }
     //End Tests postEvents UPDATE
 
     //Tests deleteEvents
@@ -510,6 +535,20 @@ class PDOEventRepositoryTest extends \PHPUnit_Framework_TestCase
            ->will($this->returnValue($this->mockPDOStatement));
         $pdoRepository = new PDOEventRepository($this->mockPDO);
         $pdoRepository->deleteEvents(1);
+    }
+
+    public function test_deleteEvents_idDoesNotExist_Null()
+    {
+        $this->mockPDOStatement->expects($this->atLeastOnce())
+            ->method('bindParam')
+            ->will($this->throwException(new \PDOException()));
+        $this->mockPDO->expects($this->atLeastOnce())
+            ->method('prepare')
+            ->will($this->returnValue($this->mockPDOStatement));
+        $pdoRepository = new PDOEventRepository($this->mockPDO);
+        $returnValue = $pdoRepository->deleteEvents(new Event(1, 2, 3, 3));
+        $this->assertNull($returnValue);
+
     }
     //End Tests deleteEvents
 
