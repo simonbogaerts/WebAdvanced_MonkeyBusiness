@@ -66,9 +66,9 @@ class PersonControllerTest extends \PHPUnit_Framework_TestCase
 
     public function test_handlePutPerson_noReturn()
     {
-        $this->mockEventRepository->expects($this->atLeastOnce())->method('putPerson');
-        $eventController = new EventController($this->mockEventRepository, $this->mockView);
-        $eventController->handlePutPerson(1);
+        $this->mockPersonRepository->expects($this->atLeastOnce())->method('putPerson');
+        $personController = new PersonController($this->mockPersonRepository, $this->mockView);
+        $personController->handlePutPerson(1);
     }
 
     //End Tests handlePutPerson
