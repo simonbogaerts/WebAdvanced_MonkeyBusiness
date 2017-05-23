@@ -49,6 +49,13 @@ th, td {
     padding: 15px;
 }
 
+h2 {
+    color: black;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 32px;
+}
 
 button[id=getAll] {
     width: 30%;
@@ -65,6 +72,7 @@ button[id=getAll] {
 
 button[id=getOne] {
     width: 30%;
+    color: white;
     background-color: #008CBA;
     padding: 12px 20px;
     margin: 8px 0;
@@ -157,6 +165,10 @@ label{
         width: 60%;
         text-align: center;
     }
+
+    h2{
+        font-size: 32px;
+    }
 }
 
 
@@ -176,4 +188,7 @@ label{
         width: 100%;
     }
 
+    h2{
+        font-size: 34px;
+    }
 }
