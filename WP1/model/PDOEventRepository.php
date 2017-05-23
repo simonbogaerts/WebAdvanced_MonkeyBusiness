@@ -10,6 +10,7 @@ namespace model;
 
 use \PDO;
 use model\Event;
+use PDOException;
 
 class PDOEventRepository
 {
@@ -23,40 +24,47 @@ class PDOEventRepository
     public function getEventsFromDate($from, $until){
         try{
             $statement = $this->connection->prepare('SELECT * FROM events WHERE start_date >= :startdate and end_date <= :enddate');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':startdate', $from, PDO::PARAM_STR);
             $statement->bindParam(':enddate', $until, PDO::PARAM_STR);
             $statement->execute();
+            $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $data = array();
-            while ($row = $statement->fetch()) {
-                $data[] = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
+            if(count($row) > 0) {
+                $data = array();
+                for($index = 0; $index < count($row); $index++ ) {
+                    $data[] = new Event($row[$index]['event_id'], $row[$index]['person_id'], $row[$index]['start_date'], $row[$index]['end_date']);
+                }
+                return $data;
+            }else{
+                return null;
             }
-            return $data;
-
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
         }
     }
 
-    public function FindByPersonAndDate($id, $from, $until){
+    public function getByPersonAndDate($id, $from, $until){
         try{
             $statement = $this->connection->prepare('SELECT * FROM events WHERE (start_date >= :startdate and end_date <= :enddate) and person_id = :id');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':startdate', $from, PDO::PARAM_STR);
             $statement->bindParam(':enddate', $until, PDO::PARAM_STR);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();
+            $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $data = array();
-            while ($row = $statement->fetch()) {
-                $data[] = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
+            if(count($row) > 0) {
+                $data = array();
+                for($index = 0; $index < count($row); $index++ ) {
+                    $data[] = new Event($row[$index]['event_id'], $row[$index]['person_id'], $row[$index]['start_date'], $row[$index]['end_date']);
+                }
+                return $data;
+            }else{
+                return null;
             }
-            return $data;
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
         }
@@ -66,17 +74,21 @@ class PDOEventRepository
     {
         try{
 
-            $statement = $this->connection->query('SELECT * from events');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement = $this->connection->prepare('SELECT * from events');
+            $statement->execute();
+            $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $data = array();
-            while ($row = $statement->fetch()) {
-                $data[] = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
+            if(count($row) > 0) {
+                $data = array();
+                for($index = 0; $index < count($row); $index++ ) {
+                    $data[] = new Event($row[$index]['event_id'], $row[$index]['person_id'], $row[$index]['start_date'], $row[$index]['end_date']);
+                }
+                return $data;
+            }else{
+                return null;
             }
-            return $data;
-
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
 
@@ -91,13 +103,16 @@ class PDOEventRepository
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();
+            $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $row = $statement->fetch();
-            $event = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
-            return $event;
-
+            if(count($row) > 0) {
+                $event = new Event($row[0]['event_id'], $row[0]['person_id'], $row[0]['start_date'], $row[0]['end_date']);
+                return $event;
+            } else {
+                return null;
+            }
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
 
@@ -108,38 +123,22 @@ class PDOEventRepository
     {
         try{
             $statement = $this->connection->prepare('SELECT * FROM events WHERE person_id = :id');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();
+            $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $data = array();
-            while ($row = $statement->fetch()) {
-                $data[] = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
+            if(count($row) > 0) {
+                $data = array();
+                for($index = 0; $index < count($row); $index++ ) {
+                    $data[] = new Event($row[$index]['event_id'], $row[$index]['person_id'], $row[$index]['start_date'], $row[$index]['end_date']);
+                }
+                return $data;
+            }else{
+                return null;
             }
-            return $data;
-
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
-            $pdo = null;
-        }
-    }
-
-    public function getByPersonId($id){
-        try{
-            $statement = $this->connection->prepare('SELECT * FROM person WHERE person_id = :id');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->bindParam(':id', $id, PDO::PARAM_INT);
-            $statement->execute();
-
-            $row = $statement->fetch();
-            $event = new Event($row['event_id'], $row['person_id'], $row['start_date'],$row['end_date']);
-            return $event;
-
-        } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
-        }
-        finally{
             $pdo = null;
         }
     }
@@ -150,9 +149,10 @@ class PDOEventRepository
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->bindParam(':id', $id, PDO::PARAM_INT);
         $statement->execute();
+
         }
         catch (PDOException $e) {
-            echo 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
         }
@@ -169,7 +169,7 @@ class PDOEventRepository
             $statement->execute();
         }
         catch (PDOException $e) {
-        echo 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
         }
@@ -177,12 +177,16 @@ class PDOEventRepository
 
     public function putEvents($id){
         try{
-            $statement = $this->connection->prepare('INSERT INTO events (event_id, person_id, start_date, end_date) VALUES (?, ?, ?, ?)');
+            $statement = $this->connection->prepare('INSERT INTO events (event_id, person_id, start_date, end_date) VALUES (:id, :personid, :startdate, :enddate)');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute(array($id, $_POST['person_id'], $_POST['start_date'],$_POST['end_date']));
+            $statement->bindParam(':id', $id, PDO::PARAM_INT);
+            $statement->bindParam(':personid', $_POST['person_id'], PDO::PARAM_INT);
+            $statement->bindParam(':startdate', $_POST['start_date'], PDO::PARAM_STR);
+            $statement->bindParam(':enddate', $_POST['end_date'], PDO::PARAM_STR);
+            $statement->execute();
         }
         catch (PDOException $e) {
-            echo 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
 

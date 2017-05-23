@@ -37,7 +37,7 @@ class EventController
     }
 
     public function handleFindByPersonAndDate($id, $from, $until){
-        $events = $this->repository->FindByPersonAndDate($id, $from, $until);
+        $events = $this->repository->getByPersonAndDate($id, $from, $until);
         $this -> view -> ShowAll($events);
 
 
@@ -48,11 +48,6 @@ class EventController
         $this->view->ShowEvent($event);
     }
 
-    public function handleFindEventByPersonId($id){
-        $event = $this->repository->getByPersonId($id);
-        $this->view->ShowEvent($event);
-
-    }
 
     public function handleFindAllEventsByPersonId($id){
         $events = $this->repository->getAllEventsByPersonId($id);

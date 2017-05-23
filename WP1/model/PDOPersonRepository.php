@@ -11,6 +11,7 @@ namespace model;
 use controller\PersonController;
 use \PDO;
 use model\Person;
+use PDOException;
 
 class PDOPersonRepository
 {
@@ -23,17 +24,22 @@ class PDOPersonRepository
 
     public function getAllPersons(){
         try{
-            $statement = $this->connection->query('SELECT * from person');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement = $this->connection->prepare('SELECT * from person');
+            $statement->execute();
+            $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $data = array();
-            while ($row = $statement->fetch()) {
-                $data[] = new Person($row['person_id'], $row['first_name'], $row['last_name'],$row['street'],$row['number'],$row['zip'],$row['town']);
+            if(count($row) > 0) {
+                $data = array();
+                for($index = 0; $index < count($row); $index++ ) {
+                    $data[] = new Person($row[$index]['person_id'], $row[$index]['first_name'], $row[$index]['last_name'],$row[$index]['street'],$row[$index]['number'],$row[$index]['zip'],$row[$index]['town']);
+                }
+                return $data;
+            }else{
+                return null;
             }
-            return $data;
-
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
+                //'Exception!: ' . $e->getMessage();
         }finally{
             $pdo = null;
         }
@@ -41,16 +47,20 @@ class PDOPersonRepository
 
     public function getPersonById($id){
         try{
-            $statement = $this->connection->prepare('SELECT *  FROM person WHERE person_id = :id ');
+            $statement = $this->connection->prepare('SELECT * FROM person WHERE person_id = :id ');
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->bindParam(':id', $id, PDO::PARAM_INT);
             $statement->execute();
 
             $row = $statement->fetch();
-            $person = new Person($row['person_id'], $row['first_name'], $row['last_name'],$row['street'],$row['number'],$row['zip'],$row['town']);
-            return $person;
+            if(count($row) > 0) {
+                $person = new Person($row[0]['person_id'], $row[0]['first_name'], $row[0]['last_name'], $row[0]['street'], $row[0]['number'], $row[0]['zip'], $row[0]['town']);
+                return $person;
+            }else{
+                return null;
+            }
         } catch (PDOException $e) {
-            return 'Exception!: ' . $e->getMessage();
+            return null;
         }finally{
             $pdo = null;
         }
@@ -58,12 +68,18 @@ class PDOPersonRepository
 
     public function putPerson($id){
         try{
-            $statement = $this->connection->prepare('INSERT INTO person (person_id, first_name, last_name, street, number, zip, town) VALUES (?, ?, ?, ?, ?, ?, ?)');
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute(array($id, $_POST['first_name'],$_POST['last_name'],$_POST['street'], $_POST['number'], $_POST['number'], $_POST['zip'],$_POST['town']));
+            $statement = $this->connection->prepare('INSERT INTO person (person_id, first_name, last_name, street, number, zip, town) VALUES (:id, :first_name, :last_name, :street, :number, :zip, :town)');
+            $statement->bindParam(':id', $id, PDO::PARAM_INT);
+            $statement->bindParam(':first_name', $_POST['person_id'], PDO::PARAM_INT);
+            $statement->bindParam(':last_name', $_POST['last_name'], PDO::PARAM_STR);
+            $statement->bindParam(':street', $_POST['street'], PDO::PARAM_STR);
+            $statement->bindParam(':number', $_POST['number'], PDO::PARAM_INT);
+            $statement->bindParam(':zip', $_POST['zip'], PDO::PARAM_INT);
+            $statement->bindParam(':town', $_POST['town'], PDO::PARAM_STR);
+            $statement->execute();
         }
         catch (PDOException $e) {
-            echo 'Exception!: ' . $e->getMessage();
+            return null;
         }
         $pdo = null;
     }
